@@ -1,0 +1,21 @@
+name: 'Jacoco Coverage Report'
+description: 'Posts Jacoco coverage as a PR comment'
+author: 'Luis Hernandez'
+
+inputs:
+  github-token:
+    description: 'Github token'
+    required: false
+    default: ${{ github.token }}
+  jacoco-xml-path:
+    description: 'Path to jacoco.xml file'
+    required: false
+    default: 'target/site/jacoco/jacoco.xml'
+
+# outputs:
+#   line-coverage:
+#     description: 'Line coverage percentage'
+  
+runs:
+  using: 'node20'
+  main: 'dist/main.js'
