@@ -24,7 +24,7 @@ interface ResultCommentParams {
   line: CoverageResult,
   branch: CoverageResult,
   method: CoverageResult,
-  baseline: Baseline,
+  baseline: Baseline | null,
   ctx: typeof context
 }
 
@@ -112,9 +112,9 @@ async function publishComment(content: string, octokit: ReturnType<typeof getOct
 }
 
 // TODO: Define approach to get baseline
-function getBaseLine(): Baseline {
-  return { line: 0, branch: 0, method: 0, sha: '' }
-}
+// function getBaseLine(): Baseline {
+//   return { line: 0, branch: 0, method: 0, sha: '' }
+// }
 
 async function run() {
   const xmlPath = core.getInput('jacoco-xml-path');
@@ -135,7 +135,7 @@ async function run() {
     if (branch) core.setOutput('branch-coverage', branch.pct)
     if (method) core.setOutput('method-coverage', method.pct)
 
-    const baseline = getBaseLine()
+    const baseline = null
 
     commentContent = generateResultComment({
       line,
