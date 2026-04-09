@@ -2,16 +2,16 @@ name: Test action
 
 on:
   pull_request:
+    types: [opened, synchronize, reopened]
 
 jobs:
   test:
     runs-on: ubuntu-latest
     permissions:
       pull-requests: write
-    
+
     steps:
       - uses: actions/checkout@v4
 
       - name: Post coverage comment
         uses: ./
-
