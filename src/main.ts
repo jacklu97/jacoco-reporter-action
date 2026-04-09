@@ -131,8 +131,8 @@ async function run() {
     const [line, branch, method] = METRIC_FIELDS.map(field => extract(xml, field))
 
     if (line) core.setOutput('line-coverage', line.pct)
-    if (branch) core.setOutput('line-coverage', branch.pct)
-    if (method) core.setOutput('line-coverage', method.pct)
+    if (branch) core.setOutput('branch-coverage', branch.pct)
+    if (method) core.setOutput('method-coverage', method.pct)
 
     const baseline = getBaseLine()
 

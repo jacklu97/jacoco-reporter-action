@@ -12,9 +12,13 @@ inputs:
     required: false
     default: 'target/site/jacoco/jacoco.xml'
 
-# outputs:
-#   line-coverage:
-#     description: 'Line coverage percentage'
+outputs:
+  line-coverage:
+    description: 'Line coverage percentage'
+  branch-coverage:
+    description: 'Branch coverage percentage'
+  method-coverage:
+    description: 'Method coverage percentage'
   
 runs:
   using: 'node20'
