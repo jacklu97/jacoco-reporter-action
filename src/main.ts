@@ -85,8 +85,9 @@ function row(label: string, d: CoverageMetric | null, baseline: Baseline | null,
 }
 
 function extract(xml: string, type: string): CoverageResult {
-  const re = new RegExp(`<counter type="${type}" missed="(\\d+)" covered="(\\d+)"`);
-  const m = xml?.match(re);
+  const re = new RegExp(`<counter type="${type}" missed="(\\d+)" covered="(\\d+)"`, 'g');
+  const matches = [...xml.matchAll(re)];
+  const m = matches.at(-1);
   if (!m) return null;
   const missed = +m[1], covered = +m[2];
   return { missed, covered, pct: +((covered / (covered + missed)) * 100).toFixed(1) };
