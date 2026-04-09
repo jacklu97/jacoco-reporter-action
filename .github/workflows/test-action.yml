@@ -1,0 +1,17 @@
+name: Test action
+
+on:
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    permissions:
+      pull-requests: write
+    
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Post coverage comment
+        uses: ./
+
