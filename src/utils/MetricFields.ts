@@ -32,6 +32,14 @@ const METRIC_FIELDS: MetricData[] = [
       key: "complexity",
       name: "complexity-coverage"
     }
+  },
+  {
+    xmlField: "CLASS",
+    output: {
+      label: "Classes",
+      key: "class",
+      name: "class-coverage"
+    }
   }
 ] as const;
 
