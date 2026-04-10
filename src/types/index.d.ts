@@ -12,6 +12,7 @@ interface Baseline {
   line: number;
   branch: number;
   method: number;
+  complexity: number;
   sha: string;
 }
 
