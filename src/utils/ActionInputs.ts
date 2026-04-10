@@ -1,5 +1,5 @@
 const ACTION_INPUTS = {
-  GITHUB_TOKEN: "github_token",
+  GITHUB_TOKEN: "github-token",
   JACOCO_XML_PATH: "jacoco-xml-path",
 };
 
