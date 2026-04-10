@@ -1,6 +1,8 @@
 import { setOutput, warning } from "@actions/core";
 import { context, type getOctokit } from "@actions/github";
-import type { ProccessedMetric } from "../types";
+import type { PullRequestEvent } from "@octokit/webhooks-types";
+
+import type { Baseline, ProccessedMetric } from "../types";
 
 async function publishComment(
 	content: string,
@@ -33,6 +35,62 @@ async function publishComment(
 	});
 }
 
+async function fetchBaseline(
+	octokit: ReturnType<typeof getOctokit>,
+	baselinePath: string,
+	baselineBranch: string,
+): Promise<Baseline | null> {
+	try {
+		const { data } = await octokit.rest.repos.getContent({
+			...context.repo,
+			path: baselinePath,
+			ref: baselineBranch,
+		});
+
+		const content = Buffer.from((data as any).content, "base64").toString();
+		return JSON.parse(content);
+	} catch {
+		return null;
+	}
+}
+
+async function updateBaseline(
+	octokit: ReturnType<typeof getOctokit>,
+	baseline: Baseline,
+	baselinePath: string,
+) {
+	const prNumber = context.payload.pull_request?.number;
+
+	const content = Buffer.from(JSON.stringify(baseline, null, 2)).toString(
+		"base64",
+	);
+	const payload = context.payload as PullRequestEvent;
+	const branch = payload.pull_request?.head.ref;
+
+	let fileSha: string | undefined;
+
+	try {
+		const { data } = await octokit.rest.repos.getContent({
+			...context.repo,
+			path: baselinePath,
+			ref: branch,
+		});
+
+		fileSha = (data as any).sha; // Types are not catching all properties
+	} catch {
+		// There is no file, first time this runs
+	}
+
+	await octokit.rest.repos.createOrUpdateFileContents({
+		...context.repo,
+		path: baselinePath,
+		message: `chore: Update jacoco baseline [${context.sha.slice(0, 7)}]`,
+		content,
+		branch,
+		...(fileSha ? { sha: fileSha } : {}),
+	});
+}
+
 function publishActionOutput(metricData: ProccessedMetric[]) {
 	metricData.forEach((metric) => {
 		if (metric.extractedData) {
@@ -41,4 +99,4 @@ function publishActionOutput(metricData: ProccessedMetric[]) {
 	});
 }
 
-export { publishActionOutput, publishComment };
+export { fetchBaseline, publishActionOutput, publishComment, updateBaseline };
