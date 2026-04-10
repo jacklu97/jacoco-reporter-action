@@ -21,6 +21,8 @@ outputs:
     description: 'Method coverage percentage'
   complexity-coverage:
     description: 'Complexity coverage percentage'
+  class-coverage:
+    description: 'Class coverage percentage'
   
 runs:
   using: 'node20'
