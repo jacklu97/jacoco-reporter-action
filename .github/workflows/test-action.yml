@@ -15,3 +15,5 @@ jobs:
 
       - name: Post coverage comment
         uses: ./
+        with:
+          github-token: ${{ github.token }}
