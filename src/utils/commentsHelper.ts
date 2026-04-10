@@ -1,7 +1,7 @@
-import { Baseline, CoverageMetric, ResultCommentParams } from "../types";
+import type { Baseline, CoverageMetric, ResultCommentParams } from "../types";
 
 function generateNoXmlComment(): string {
-  return `## 📊 Code Coverage
+	return `## 📊 Code Coverage
 
 Jacoco XML file is not present. 
 
@@ -11,17 +11,19 @@ Make sure you have jacoco in place.`;
 }
 
 function generateResultComment({
-  metrics,
-  ctx,
-  baseline,
+	metrics,
+	ctx,
+	baseline,
 }: ResultCommentParams): string {
-  const tableRows = metrics.map((metric) => {
-    const { label, key } = metric.data.output
-    const { extractedData } = metric
-    return row(label, extractedData, baseline, key)
-  }).join('\n')
-  
-  return `## 📊 Code Coverage
+	const tableRows = metrics
+		.map((metric) => {
+			const { label, key } = metric.data.output;
+			const { extractedData } = metric;
+			return row(label, extractedData, baseline, key);
+		})
+		.join("\n");
+
+	return `## 📊 Code Coverage
 
 | Type | Covered / Total | Coverage |
 |------|----------------|----------|
@@ -31,32 +33,29 @@ ${tableRows}
 }
 
 function row(
-  label: string,
-  d: CoverageMetric | null,
-  baseline: Baseline | null,
-  key: keyof Baseline,
+	label: string,
+	d: CoverageMetric | null,
+	baseline: Baseline | null,
+	key: keyof Baseline,
 ) {
-  if (!d) return `| ${label} | N/A | N/A |`;
-  return `| ${label} | ${d.covered} / ${d.covered + d.missed} | **${d.pct}%** ${emoji(d.pct)}${delta(d.pct, baseline, key)} |`;
+	if (!d) return `| ${label} | N/A | N/A |`;
+	return `| ${label} | ${d.covered} / ${d.covered + d.missed} | **${d.pct}%** ${emoji(d.pct)}${delta(d.pct, baseline, key)} |`;
 }
 
 function emoji(pct: number) {
-  return pct >= 80 ? "🟢" : pct >= 50 ? "🟡" : "🔴";
+	return pct >= 80 ? "🟢" : pct >= 50 ? "🟡" : "🔴";
 }
 
 function delta(
-  current: number,
-  baseline: Baseline | null,
-  key: keyof Baseline,
+	current: number,
+	baseline: Baseline | null,
+	key: keyof Baseline,
 ): string {
-  if (!baseline || typeof baseline[key] !== "number") return "";
-  const diff = +(current - (baseline[key] as number)).toFixed(1);
-  if (diff > 0) return ` ▲ +${diff}%`;
-  if (diff < 0) return ` ▼ ${diff}%`;
-  return " ─";
+	if (!baseline || typeof baseline[key] !== "number") return "";
+	const diff = +(current - (baseline[key] as number)).toFixed(1);
+	if (diff > 0) return ` ▲ +${diff}%`;
+	if (diff < 0) return ` ▼ ${diff}%`;
+	return " ─";
 }
 
-export {
-    generateNoXmlComment,
-    generateResultComment
-}
+export { generateNoXmlComment, generateResultComment };

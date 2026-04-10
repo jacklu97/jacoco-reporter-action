@@ -1,11 +1,19 @@
-import { readFileSync } from "fs";
-
-import { getInput, setFailed, setOutput } from "@actions/core";
+import { readFileSync } from "node:fs";
+import { getInput, setFailed } from "@actions/core";
 import { context, getOctokit } from "@actions/github";
 
-import { type ProccessedMetric } from "./types";
+import type { ProccessedMetric } from "./types";
 
-import { ACTION_INPUTS, extractFrom, generateNoXmlComment, generateResultComment, METRIC_FIELDS, publishActionOutput, publishComment, safeRun } from "./utils";
+import {
+	ACTION_INPUTS,
+	extractFrom,
+	generateNoXmlComment,
+	generateResultComment,
+	METRIC_FIELDS,
+	publishActionOutput,
+	publishComment,
+	safeRun,
+} from "./utils";
 
 // TODO: Define approach to get baseline
 // function getBaseLine(): Baseline {
@@ -13,37 +21,39 @@ import { ACTION_INPUTS, extractFrom, generateNoXmlComment, generateResultComment
 // }
 
 async function run() {
-  const xmlPath = getInput(ACTION_INPUTS.JACOCO_XML_PATH);
-  const token = getInput(ACTION_INPUTS.GITHUB_TOKEN);
+	const xmlPath = getInput(ACTION_INPUTS.JACOCO_XML_PATH);
+	const token = getInput(ACTION_INPUTS.GITHUB_TOKEN);
 
-  const octokit = getOctokit(token);
+	const octokit = getOctokit(token);
 
-  let commentContent: string | undefined = undefined;
+	let commentContent: string | undefined;
 
-  const xml: string | null = safeRun(() => readFileSync(xmlPath, "utf-8"));
+	const xml: string | null = safeRun(() => readFileSync(xmlPath, "utf-8"));
 
-  if (!xml) {
-    commentContent = generateNoXmlComment();
-  } else {
-    const processedMetricData: ProccessedMetric[] = METRIC_FIELDS.map(metric => {
-      return {
-        data: metric,
-        extractedData: extractFrom(xml, metric.xmlField)
-      }
-    })
+	if (!xml) {
+		commentContent = generateNoXmlComment();
+	} else {
+		const processedMetricData: ProccessedMetric[] = METRIC_FIELDS.map(
+			(metric) => {
+				return {
+					data: metric,
+					extractedData: extractFrom(xml, metric.xmlField),
+				};
+			},
+		);
 
-    publishActionOutput(processedMetricData)
+		publishActionOutput(processedMetricData);
 
-    const baseline = null;
+		const baseline = null;
 
-    commentContent = generateResultComment({
-      metrics: processedMetricData,
-      ctx: context,
-      baseline,
-    });
-  }
+		commentContent = generateResultComment({
+			metrics: processedMetricData,
+			ctx: context,
+			baseline,
+		});
+	}
 
-  await publishComment(commentContent, octokit);
+	await publishComment(commentContent, octokit);
 }
 
 run().catch(setFailed);
