@@ -16,15 +16,15 @@ inputs:
     required: false
     default: 'target/site/jacoco/jacoco.xml'
   baseline-path:
-    description: ''
+    description: 'Path where the baseline file is stored or will be created at'
     required: false
     default: '.github/jacoco-baseline.json'
   baseline-branch:
-    description: ''
+    description: 'Name of branch used as ref. Usually it is main/master'
     required: false
     default: main
   enable-baseline:
-    description: ''
+    description: 'Flag to activate the flow that will fetch and generate a baseline'
     required: false
     default: "false"
 
