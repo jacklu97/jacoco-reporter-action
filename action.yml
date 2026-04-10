@@ -2,6 +2,10 @@ name: 'Jacoco Coverage Report'
 description: 'Posts Jacoco coverage as a PR comment'
 author: 'Luis Hernandez'
 
+branding:
+  icon: check-circle
+  color: white
+
 inputs:
   github-token:
     description: 'Github token'
