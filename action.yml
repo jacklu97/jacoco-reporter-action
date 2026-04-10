@@ -15,6 +15,18 @@ inputs:
     description: 'Path to jacoco.xml file'
     required: false
     default: 'target/site/jacoco/jacoco.xml'
+  baseline-path:
+    description: ''
+    required: false
+    default: '.github/jacoco-baseline.json'
+  baseline-branch:
+    description: ''
+    required: false
+    default: main
+  enable-baseline:
+    description: ''
+    required: false
+    default: "false"
 
 outputs:
   line-coverage:

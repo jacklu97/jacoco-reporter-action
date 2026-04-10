@@ -1,5 +1,5 @@
 import { readFileSync } from "node:fs";
-import { getInput, setFailed } from "@actions/core";
+import { getBooleanInput, getInput, setFailed } from "@actions/core";
 import { context, getOctokit } from "@actions/github";
 
 import type { ProccessedMetric } from "./types";
@@ -7,12 +7,15 @@ import type { ProccessedMetric } from "./types";
 import {
 	ACTION_INPUTS,
 	extractFrom,
+	fetchBaseline,
 	generateNoXmlComment,
 	generateResultComment,
+	getUpdatedBaseline,
 	METRIC_FIELDS,
 	publishActionOutput,
 	publishComment,
 	safeRun,
+	updateBaseline,
 } from "./utils";
 
 // TODO: Define approach to get baseline
@@ -23,6 +26,10 @@ import {
 async function run() {
 	const xmlPath = getInput(ACTION_INPUTS.JACOCO_XML_PATH);
 	const token = getInput(ACTION_INPUTS.GITHUB_TOKEN);
+
+	const isBaselineEnabled = getBooleanInput(ACTION_INPUTS.ENABLE_BASELINE);
+	const baselinePath = getInput(ACTION_INPUTS.BASELINE_PATH);
+	const baselineBranch = getInput(ACTION_INPUTS.BASELINE_BRANCH);
 
 	const octokit = getOctokit(token);
 
@@ -44,13 +51,22 @@ async function run() {
 
 		publishActionOutput(processedMetricData);
 
-		const baseline = null;
+		const baseline = isBaselineEnabled
+			? await fetchBaseline(octokit, baselinePath, baselineBranch)
+			: null;
 
 		commentContent = generateResultComment({
 			metrics: processedMetricData,
 			ctx: context,
 			baseline,
 		});
+
+		if (isBaselineEnabled)
+			updateBaseline(
+				octokit,
+				getUpdatedBaseline(processedMetricData),
+				baselinePath,
+			);
 	}
 
 	await publishComment(commentContent, octokit);

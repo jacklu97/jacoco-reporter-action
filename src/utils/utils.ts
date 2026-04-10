@@ -1,4 +1,4 @@
-import type { CoverageResult } from "../types";
+import type { Baseline, CoverageResult, ProccessedMetric } from "../types";
 
 function extractFrom(xmlContent: string, typeToSearch: string): CoverageResult {
 	const re = new RegExp(
@@ -17,6 +17,16 @@ function extractFrom(xmlContent: string, typeToSearch: string): CoverageResult {
 	};
 }
 
+function getUpdatedBaseline(metrics: ProccessedMetric[]): Baseline {
+	return metrics.reduce(
+		(acc, m) => ({
+			...acc,
+			[m.data.output.key]: m.extractedData?.pct ?? 0,
+		}),
+		{} as Baseline,
+	);
+}
+
 function safeRun<T>(cb: () => T): T | null {
 	try {
 		return cb();
@@ -25,4 +35,4 @@ function safeRun<T>(cb: () => T): T | null {
 	}
 }
 
-export { extractFrom, safeRun };
+export { extractFrom, getUpdatedBaseline, safeRun };
