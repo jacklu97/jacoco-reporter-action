@@ -2,7 +2,7 @@ import { MetricData } from "../types";
 
 const METRIC_FIELDS: MetricData[] = [
   {
-    xmlField: "LINES",
+    xmlField: "LINE",
     output: {
       label: "Lines",
       key: "line",
@@ -10,7 +10,7 @@ const METRIC_FIELDS: MetricData[] = [
     },
   },
   {
-    xmlField: "BRANCHES",
+    xmlField: "BRANCH",
     output: {
       label: "Branches",
       key: "branch",
@@ -18,7 +18,7 @@ const METRIC_FIELDS: MetricData[] = [
     },
   },
   {
-    xmlField: "METHODS",
+    xmlField: "METHOD",
     output: {
       label: "Methods",
       key: "method",
