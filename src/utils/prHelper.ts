@@ -48,7 +48,10 @@ async function fetchBaseline(
 		});
 
 		const content = Buffer.from((data as any).content, "base64").toString();
-		return JSON.parse(content);
+		return {
+			...JSON.parse(content),
+			sha: (data as any).sha,
+		};
 	} catch {
 		return null;
 	}
@@ -59,8 +62,6 @@ async function updateBaseline(
 	baseline: Baseline,
 	baselinePath: string,
 ) {
-	const prNumber = context.payload.pull_request?.number;
-
 	const content = Buffer.from(JSON.stringify(baseline, null, 2)).toString(
 		"base64",
 	);
