@@ -61,12 +61,18 @@ async function fetchBaseline(
 
 async function updateBaseline(
 	octokit: ReturnType<typeof getOctokit>,
-	baseline: Baseline,
+	originalBaseline: Baseline | null,
+	updatedBaseline: Baseline,
 	baselinePath: string,
 ) {
-	const content = Buffer.from(JSON.stringify(baseline, null, 2)).toString(
-		"base64",
-	);
+	if (originalBaseline && originalBaseline === updatedBaseline) {
+		warning("No changes detected in baseline, skipping update...");
+		return;
+	}
+
+	const content = Buffer.from(
+		JSON.stringify(updatedBaseline, null, 2),
+	).toString("base64");
 	const payload = context.payload as PullRequestEvent;
 	const branch = payload.pull_request?.head.ref;
 

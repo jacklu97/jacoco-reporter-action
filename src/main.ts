@@ -72,6 +72,7 @@ async function run() {
 		if (isBaselineEnabled && !isLatestCommitAutomatic)
 			updateBaseline(
 				octokit,
+				baseline,
 				getUpdatedBaseline(processedMetricData),
 				baselinePath,
 			);
