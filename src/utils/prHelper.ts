@@ -1,3 +1,5 @@
+import { isDeepStrictEqual } from "node:util";
+
 import { setOutput, warning } from "@actions/core";
 import { context, type getOctokit } from "@actions/github";
 import type { PullRequestEvent } from "@octokit/webhooks-types";
@@ -65,7 +67,10 @@ async function updateBaseline(
 	updatedBaseline: Baseline,
 	baselinePath: string,
 ) {
-	if (originalBaseline && originalBaseline === updatedBaseline) {
+	if (
+		originalBaseline &&
+		isDeepStrictEqual(originalBaseline, updatedBaseline)
+	) {
 		warning("No changes detected in baseline, skipping update...");
 		return;
 	}
