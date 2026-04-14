@@ -67,6 +67,10 @@ async function updateBaseline(
 	updatedBaseline: Baseline,
 	baselinePath: string,
 ) {
+	warning(
+		`Will try to update the baseline with ${JSON.stringify(updatedBaseline)}`,
+	);
+	warning(`Original baseline is ${JSON.stringify(originalBaseline)}`);
 	if (
 		originalBaseline &&
 		isDeepStrictEqual(originalBaseline, updatedBaseline)
