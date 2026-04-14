@@ -11,6 +11,7 @@ import {
 	generateNoXmlComment,
 	generateResultComment,
 	getUpdatedBaseline,
+	isLatestCommitValid,
 	METRIC_FIELDS,
 	publishActionOutput,
 	publishComment,
@@ -61,7 +62,9 @@ async function run() {
 			baseline,
 		});
 
-		if (isBaselineEnabled)
+		const isLatestCommitAutomatic = await isLatestCommitValid(octokit);
+
+		if (isBaselineEnabled && !isLatestCommitAutomatic)
 			updateBaseline(
 				octokit,
 				getUpdatedBaseline(processedMetricData),

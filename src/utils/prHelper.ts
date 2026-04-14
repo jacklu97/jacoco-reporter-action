@@ -4,6 +4,8 @@ import type { PullRequestEvent } from "@octokit/webhooks-types";
 
 import type { Baseline, ProccessedMetric } from "../types";
 
+const DEFAULT_UPDATE_COMMIT_MSG = "chore: Update jacoco baseline";
+
 async function publishComment(
 	content: string,
 	octokit: ReturnType<typeof getOctokit>,
@@ -85,11 +87,31 @@ async function updateBaseline(
 	await octokit.rest.repos.createOrUpdateFileContents({
 		...context.repo,
 		path: baselinePath,
-		message: `chore: Update jacoco baseline [${context.sha.slice(0, 7)}]`,
+		message: `${DEFAULT_UPDATE_COMMIT_MSG} [${context.sha.slice(0, 7)}]`,
 		content,
 		branch,
 		...(fileSha ? { sha: fileSha } : {}),
 	});
+}
+
+async function getLatestCommitMessage(
+	octokit: ReturnType<typeof getOctokit>,
+): Promise<string> {
+	const { data } = await octokit.rest.repos.getCommit({
+		...context.repo,
+		ref: context.sha,
+	});
+
+	return data.commit.message;
+}
+
+// Will prevent infinite loops
+async function isLatestCommitValid(
+	octokit: ReturnType<typeof getOctokit>,
+): Promise<boolean> {
+	const lattestCommit = await getLatestCommitMessage(octokit);
+
+	return lattestCommit.startsWith(DEFAULT_UPDATE_COMMIT_MSG);
 }
 
 function publishActionOutput(metricData: ProccessedMetric[]) {
@@ -100,4 +122,10 @@ function publishActionOutput(metricData: ProccessedMetric[]) {
 	});
 }
 
-export { fetchBaseline, publishActionOutput, publishComment, updateBaseline };
+export {
+	fetchBaseline,
+	isLatestCommitValid,
+	publishActionOutput,
+	publishComment,
+	updateBaseline,
+};
