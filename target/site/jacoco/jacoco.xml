@@ -10,7 +10,7 @@
         <counter type="CLASS" missed="2" covered="1" />
     </package>
     <counter type="INSTRUCTION" missed="138" covered="79" />
-    <counter type="BRANCH" missed="0" covered="8" />
+    <counter type="BRANCH" missed="4" covered="4" />
     <counter type="LINE" missed="29" covered="14" />
     <counter type="COMPLEXITY" missed="19" covered="8" />
     <counter type="METHOD" missed="17" covered="6" />
