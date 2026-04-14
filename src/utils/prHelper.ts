@@ -5,6 +5,7 @@ import { context, type getOctokit } from "@actions/github";
 import type { PullRequestEvent } from "@octokit/webhooks-types";
 
 import type { Baseline, ProccessedMetric } from "../types";
+import { toComparableBaseline } from "./utils";
 
 const DEFAULT_UPDATE_COMMIT_AUTHOR = "github-actions[bot]";
 
@@ -67,13 +68,12 @@ async function updateBaseline(
 	updatedBaseline: Baseline,
 	baselinePath: string,
 ) {
-	warning(
-		`Will try to update the baseline with ${JSON.stringify(updatedBaseline)}`,
-	);
-	warning(`Original baseline is ${JSON.stringify(originalBaseline)}`);
 	if (
 		originalBaseline &&
-		isDeepStrictEqual(originalBaseline, updatedBaseline)
+		isDeepStrictEqual(
+			toComparableBaseline(originalBaseline),
+			toComparableBaseline(updatedBaseline),
+		)
 	) {
 		warning("No changes detected in baseline, skipping update...");
 		return;

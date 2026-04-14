@@ -35,4 +35,11 @@ function safeRun<T>(cb: () => T): T | null {
 	}
 }
 
-export { extractFrom, getUpdatedBaseline, safeRun };
+function toComparableBaseline({
+	sha,
+	...rest
+}: Baseline): Omit<Baseline, "sha"> {
+	return rest;
+}
+
+export { extractFrom, getUpdatedBaseline, safeRun, toComparableBaseline };
