@@ -111,6 +111,11 @@ async function isLatestCommitValid(
 ): Promise<boolean> {
 	const lattestCommit = await getLatestCommitMessage(octokit);
 
+	warning(`Lattest commit message is ${lattestCommit}`);
+	warning(
+		`Is it a valid commit? ${lattestCommit.startsWith(DEFAULT_UPDATE_COMMIT_MSG)}`,
+	);
+
 	return lattestCommit.startsWith(DEFAULT_UPDATE_COMMIT_MSG);
 }
 
