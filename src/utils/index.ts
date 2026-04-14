@@ -3,6 +3,7 @@ import { generateNoXmlComment, generateResultComment } from "./commentsHelper";
 import METRIC_FIELDS from "./metricFields";
 import {
 	fetchBaseline,
+	isLatestCommitValid,
 	publishActionOutput,
 	publishComment,
 	updateBaseline,
@@ -16,6 +17,7 @@ export {
 	generateNoXmlComment,
 	generateResultComment,
 	getUpdatedBaseline,
+	isLatestCommitValid,
 	METRIC_FIELDS,
 	publishActionOutput,
 	publishComment,
