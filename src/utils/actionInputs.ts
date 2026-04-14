@@ -4,6 +4,7 @@ const ACTION_INPUTS = {
 	BASELINE_PATH: "baseline-path",
 	BASELINE_BRANCH: "baseline-branch",
 	ENABLE_BASELINE: "enable-baseline",
+	UPDATE_PR_AUTHOR: "update-pr-author",
 };
 
 export default ACTION_INPUTS;

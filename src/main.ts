@@ -32,6 +32,8 @@ async function run() {
 	const baselinePath = getInput(ACTION_INPUTS.BASELINE_PATH);
 	const baselineBranch = getInput(ACTION_INPUTS.BASELINE_BRANCH);
 
+	const automaticUpdateAuthor = getInput(ACTION_INPUTS.UPDATE_PR_AUTHOR);
+
 	const octokit = getOctokit(token);
 
 	let commentContent: string | undefined;
@@ -62,11 +64,15 @@ async function run() {
 			baseline,
 		});
 
-		const isLatestCommitAutomatic = await isLatestCommitValid(octokit);
+		const isLatestCommitAutomatic = await isLatestCommitValid(
+			octokit,
+			automaticUpdateAuthor,
+		);
 
 		if (isBaselineEnabled && !isLatestCommitAutomatic)
 			updateBaseline(
 				octokit,
+				baseline,
 				getUpdatedBaseline(processedMetricData),
 				baselinePath,
 			);

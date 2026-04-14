@@ -27,6 +27,10 @@ inputs:
     description: 'Flag to activate the flow that will fetch and generate a baseline'
     required: false
     default: "false"
+  update-pr-author:
+    description: 'The author name used to prevent infinite loops. If baseline is enabled this has to be customized'
+    required: false
+    default: "github-actions[bot]"
 
 outputs:
   line-coverage:
