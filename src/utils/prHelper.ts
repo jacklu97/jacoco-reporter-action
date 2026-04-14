@@ -4,7 +4,7 @@ import type { PullRequestEvent } from "@octokit/webhooks-types";
 
 import type { Baseline, ProccessedMetric } from "../types";
 
-const DEFAULT_UPDATE_COMMIT_MSG = "chore: Update jacoco baseline";
+const DEFAULT_UPDATE_COMMIT_AUTHOR = "github-actions[bot]";
 
 async function publishComment(
 	content: string,
@@ -87,31 +87,33 @@ async function updateBaseline(
 	await octokit.rest.repos.createOrUpdateFileContents({
 		...context.repo,
 		path: baselinePath,
-		message: `${DEFAULT_UPDATE_COMMIT_MSG} [${context.sha.slice(0, 7)}]`,
+		message: `chore: Update jacoco baseline [${context.sha.slice(0, 7)}]`,
 		content,
 		branch,
 		...(fileSha ? { sha: fileSha } : {}),
 	});
 }
 
-async function getLatestCommitMessage(
+async function getLatestCommitAuthor(
 	octokit: ReturnType<typeof getOctokit>,
 ): Promise<string> {
+	const payload = context.payload as PullRequestEvent;
 	const { data } = await octokit.rest.repos.getCommit({
 		...context.repo,
-		ref: context.sha,
+		ref: payload.pull_request.head.sha,
 	});
 
-	return data.commit.message;
+	return data.commit.author?.name ?? DEFAULT_UPDATE_COMMIT_AUTHOR;
 }
 
 // Will prevent infinite loops
 async function isLatestCommitValid(
 	octokit: ReturnType<typeof getOctokit>,
+	updateAuthor: string,
 ): Promise<boolean> {
-	const lattestCommit = await getLatestCommitMessage(octokit);
+	const lattestCommitAuthor = await getLatestCommitAuthor(octokit);
 
-	return lattestCommit.startsWith(DEFAULT_UPDATE_COMMIT_MSG);
+	return lattestCommitAuthor === updateAuthor;
 }
 
 function publishActionOutput(metricData: ProccessedMetric[]) {
