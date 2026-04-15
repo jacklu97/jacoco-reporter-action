@@ -1,5 +1,11 @@
 # jacoco-reporter-action
 
+<div align="center">
+
+> 🩺 Works great with **[PAT-hological](https://github.com/apps/pat-hological)** — token-based auth for GitHub Actions
+
+</div>
+
 Github action that will publish the result of JaCoCo report as a PR comment. This is helpful to make sure your changes are properly tested and code coverage stays in an acceptable range.
 
 ## Usage
